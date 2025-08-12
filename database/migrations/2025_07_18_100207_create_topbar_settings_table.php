@@ -1,0 +1,51 @@
+<?php
+
+use App\Models\User;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('topbar_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('address_title')->nullable();
+            $table->text('address')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('working_hour')->nullable();
+            $table->string('about_title')->nullable();
+            $table->text('about_summery')->nullable();
+            $table->string('social_title')->nullable();
+            $table->boolean('social_status')->default(true);
+            $table->boolean('status')->default(true);
+
+            // Audit fields
+            $table->foreignIdFor(User::class, 'created_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            // updated_by is nullable and only populated when a record is updated
+            $table->foreignIdFor(User::class, 'updated_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('topbar_settings');
+    }
+};
